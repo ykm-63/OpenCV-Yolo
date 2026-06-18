@@ -1,0 +1,10 @@
+[
+  {
+    "item_name": "sample_item",
+    "count": 1,
+    "confidence": 0.95,
+    "image_filename": "sample.jpg",
+    "analyzed_at": "2026-05-04 12:00:00",
+    "result_image_path": "outputs/detected/result_001.jpg"
+  }
+]

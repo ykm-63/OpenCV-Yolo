@@ -1,0 +1,62 @@
+# Root artifacts
+ai-server.zip
+*.zip
+*.docx
+*.pdf
+*.lnk
+
+# Local editor / OS
+.idea/
+.vscode/
+*.iml
+Thumbs.db
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# AI data / model artifacts
+ai-server/*.pt
+ai-server/runs/
+ai-server/roboflow*/
+ai-server/trainex/
+ai-server/target_detection/
+ai-server/data/images/raw/*
+!ai-server/data/images/raw/.gitkeep
+ai-server/data/images/test/*
+!ai-server/data/images/test/.gitkeep
+ai-server/data/videos/raw/*
+!ai-server/data/videos/raw/.gitkeep
+ai-server/dataset/images/
+ai-server/dataset/labels/
+ai-server/dataset/raw_frames/
+ai-server/outputs/original/*
+!ai-server/outputs/original/.gitkeep
+ai-server/outputs/processed/*
+!ai-server/outputs/processed/.gitkeep
+ai-server/outputs/detected/*
+!ai-server/outputs/detected/.gitkeep
+ai-server/outputs/results.json
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.npy
+
+# Java / Spring Boot
+backend-server/target/
+backend-server/.mvn/wrapper/maven-wrapper.jar
+backend-server/$env
+build/
+dist/
+
+# Previous nested git backups after monorepo conversion
+.git-backup-*/

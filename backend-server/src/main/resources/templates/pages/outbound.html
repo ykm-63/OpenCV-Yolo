@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luma Scan 반출 관리</title>
+
+    <link rel="stylesheet" href="/css/common/reset.css">
+    <link rel="stylesheet" href="/css/common/layout.css?v=20260603-menu3">
+    <link rel="stylesheet" href="/css/common/button.css">
+    <link rel="stylesheet" href="/css/common/table.css">
+    <link rel="stylesheet" href="/css/common/modal.css">
+    <link rel="stylesheet" href="/css/pages/outbound.css">
+</head>
+<body>
+
+<div class="app">
+
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="main">
+
+        <section class="page-title">
+            <div>
+                <p>Outbound Management</p>
+                <h2>상품 반출 관리</h2>
+                <span>
+                    창고 또는 매장에서 외부로 나간 상품의 반출 기록을 등록하고, 반출 수량 및 처리 상태를 관리합니다.
+                </span>
+            </div>
+
+            <div class="outbound-actions">
+                <button type="button" class="btn btn-outline">CSV 다운로드</button>
+                <button type="button" class="btn btn-primary" id="openOutboundModalBtn">반출 등록</button>
+            </div>
+        </section>
+
+        <section class="outbound-summary-row">
+            <article class="outbound-chip">
+                <span>오늘 반출 건수</span>
+                <strong>7</strong>
+            </article>
+
+            <article class="outbound-chip">
+                <span>이번 주 반출 수량</span>
+                <strong>142</strong>
+            </article>
+
+            <article class="outbound-chip warning">
+                <span>미확인 반출</span>
+                <strong>2</strong>
+            </article>
+
+            <article class="outbound-chip">
+                <span>최근 반출 시각</span>
+                <strong>13:44</strong>
+            </article>
+        </section>
+
+        <section class="outbound-filter-card">
+            <div class="filter-row">
+                <div class="filter-control">
+                    <label>검색어</label>
+                    <input type="text" id="outboundSearchInput" placeholder="반출 ID, 상품명, 목적지 검색">
+                </div>
+
+                <div class="filter-control">
+                    <label>카테고리</label>
+                    <select id="outboundCategoryFilter">
+                        <option value="all">전체</option>
+                        <option value="음료">음료</option>
+                        <option value="스낵">스낵</option>
+                        <option value="생활용품">생활용품</option>
+                    </select>
+                </div>
+
+                <div class="filter-control">
+                    <label>처리 상태</label>
+                    <select id="outboundStatusFilter">
+                        <option value="all">전체</option>
+                        <option value="처리 완료">처리 완료</option>
+                        <option value="미확인">미확인</option>
+                    </select>
+                </div>
+
+                <button type="button" class="btn btn-primary" id="outboundSearchBtn">검색</button>
+            </div>
+        </section>
+
+        <section class="outbound-table-card">
+            <div class="section-head">
+                <div>
+                    <h3>반출 내역</h3>
+                    <p>상품 반출 이력 및 신규 반출 등록을 관리합니다.</p>
+                </div>
+
+                <div class="table-actions">
+                    <button type="button" class="btn btn-outline">선택 삭제</button>
+                    <button type="button" class="btn btn-primary" id="openOutboundModalBtn2">반출 등록</button>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th><input type="checkbox"></th>
+                        <th>반출 ID</th>
+                        <th>상품명</th>
+                        <th>카테고리</th>
+                        <th>반출 수량</th>
+                        <th>목적지 / 사유</th>
+                        <th>처리 시각</th>
+                        <th>상태</th>
+                        <th>관리</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>EX-0041</td>
+                        <td>콜라</td>
+                        <td>음료</td>
+                        <td>12</td>
+                        <td>1층 매대 보충</td>
+                        <td>2026-05-15 13:44</td>
+                        <td><span class="outbound-status confirmed">처리 완료</span></td>
+                        <td>
+                            <div class="row-actions">
+                                <button type="button">수정</button>
+                                <button type="button" class="danger-text">삭제</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>EX-0040</td>
+                        <td>감자칩</td>
+                        <td>스낵</td>
+                        <td>6</td>
+                        <td>행사 진열</td>
+                        <td>2026-05-15 13:30</td>
+                        <td><span class="outbound-status confirmed">처리 완료</span></td>
+                        <td>
+                            <div class="row-actions">
+                                <button type="button">수정</button>
+                                <button type="button" class="danger-text">삭제</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>EX-0039</td>
+                        <td>사이다</td>
+                        <td>음료</td>
+                        <td>8</td>
+                        <td>폐기 처리</td>
+                        <td>2026-05-15 13:10</td>
+                        <td><span class="outbound-status pending">미확인</span></td>
+                        <td>
+                            <div class="row-actions">
+                                <button type="button">수정</button>
+                                <button type="button" class="danger-text">삭제</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>EX-0038</td>
+                        <td>생수</td>
+                        <td>음료</td>
+                        <td>20</td>
+                        <td>창고 이동</td>
+                        <td>2026-05-15 11:55</td>
+                        <td><span class="outbound-status pending">미확인</span></td>
+                        <td>
+                            <div class="row-actions">
+                                <button type="button">수정</button>
+                                <button type="button" class="danger-text">삭제</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>EX-0037</td>
+                        <td>콜라</td>
+                        <td>음료</td>
+                        <td>5</td>
+                        <td>샘플 제공</td>
+                        <td>2026-05-15 10:20</td>
+                        <td><span class="outbound-status confirmed">처리 완료</span></td>
+                        <td>
+                            <div class="row-actions">
+                                <button type="button">수정</button>
+                                <button type="button" class="danger-text">삭제</button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <div class="modal-overlay" id="outboundModalOverlay">
+            <div class="modal-box">
+                <div class="modal-head">
+                    <h3>반출 등록</h3>
+                    <button type="button" class="modal-close" id="closeOutboundModalBtn">×</button>
+                </div>
+
+                <form id="outboundForm">
+                    <div class="form-row">
+                        <label>상품 선택</label>
+                        <select name="productId" class="form-control" required>
+                            <option value="">상품을 선택하세요</option>
+                            <option value="P-001">콜라 (현재 재고: 32)</option>
+                            <option value="P-002">사이다 (현재 재고: 8)</option>
+                            <option value="P-003">생수 (현재 재고: 3)</option>
+                            <option value="P-004">감자칩 (현재 재고: 21)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <label>반출 수량</label>
+                        <input type="number" name="outboundQty" class="form-control" placeholder="수량 입력" min="1" required>
+                    </div>
+
+                    <div class="form-row">
+                        <label>목적지 / 사유</label>
+                        <input type="text" name="destination" class="form-control" placeholder="예: 1층 매대 보충, 폐기 처리">
+                    </div>
+
+                    <div class="form-row">
+                        <label>처리 일시</label>
+                        <input type="datetime-local" name="outboundDate" class="form-control" required>
+                    </div>
+
+                    <div class="form-row">
+                        <label>처리 상태</label>
+                        <select name="status" class="form-control">
+                            <option value="처리 완료">처리 완료</option>
+                            <option value="미확인">미확인</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-outline" id="cancelOutboundBtn">취소</button>
+                        <button type="submit" class="btn btn-primary">반출 등록</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+</div>
+
+<script src="/js/common/nav.js?v=20260603-menu3"></script>
+<script src="/js/pages/outbound.js"></script>
+</body>
+</html>

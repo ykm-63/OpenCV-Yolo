@@ -1,0 +1,33 @@
+<header class="header" th:fragment="header">
+    <div class="brand">
+        <a href="/opencv" class="brand-link">
+            <div class="brand-mark">LS</div>
+            <div>
+                <h1>Luma Scan</h1>
+                <p>YOLO 재고 인식 콘솔</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="header-actions">
+        <button type="button" class="menu-toggle" id="menuToggleBtn" aria-label="메뉴 열기">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+
+    <div class="menu-backdrop" id="menuBackdrop" hidden></div>
+    <aside class="side-menu" id="sideMenu" hidden aria-hidden="true">
+        <div class="side-menu-head">
+            <strong>메뉴</strong>
+            <button type="button" id="menuCloseBtn" aria-label="메뉴 닫기">×</button>
+        </div>
+        <nav class="side-menu-links">
+            <a href="/opencv">인식 화면</a>
+            <a href="/home">대시보드</a>
+            <a href="/inbound">입고 관리</a>
+            <a href="/outbound">반출 관리</a>
+        </nav>
+    </aside>
+</header>

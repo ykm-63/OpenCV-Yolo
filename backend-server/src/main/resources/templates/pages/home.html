@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luma Scan 대시보드</title>
+
+    <link rel="stylesheet" href="/css/common/reset.css">
+    <link rel="stylesheet" href="/css/common/layout.css">
+    <link rel="stylesheet" href="/css/common/button.css">
+    <link rel="stylesheet" href="/css/common/table.css">
+    <link rel="stylesheet" href="/css/pages/dashboard.css?v=20260604-dashboard2">
+</head>
+<body>
+<div class="app">
+    <header class="header">
+        <div class="brand">
+            <a href="/opencv" class="brand-link">
+                <div class="brand-mark">LS</div>
+                <div>
+                    <h1>Luma Scan</h1>
+                    <p>YOLO 재고 인식 콘솔</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="header-actions">
+            <button type="button" class="menu-toggle" id="menuToggleBtn" aria-label="메뉴 열기">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="menu-backdrop" id="menuBackdrop" hidden></div>
+    <aside class="side-menu" id="sideMenu" hidden aria-hidden="true">
+        <div class="side-menu-head">
+            <strong>메뉴</strong>
+            <button type="button" id="menuCloseBtn" aria-label="메뉴 닫기">×</button>
+        </div>
+        <nav class="side-menu-links">
+            <a href="/opencv">인식 화면</a>
+            <a href="/home" class="active">대시보드</a>
+            <a href="/inbound">입고 관리</a>
+            <a href="/outbound">반출 관리</a>
+        </nav>
+    </aside>
+
+    <main class="main">
+        <section class="page-title dashboard-hero">
+            <div>
+                <p>Inventory Dashboard</p>
+                <h2>재고 인식 통합 대시보드</h2>
+                <span>YOLO 분석 결과와 재고 상태를 한 화면에서 확인합니다.</span>
+            </div>
+
+            <div class="dashboard-actions">
+                <a href="/opencv" class="btn btn-primary">영상 분석 시작</a>
+            </div>
+        </section>
+
+        <section class="summary-grid">
+            <article class="summary-card">
+                <span>등록 상품</span>
+                <strong id="dashboardProductCount">-</strong>
+                <p>DB product 기준</p>
+            </article>
+
+            <article class="summary-card warning">
+                <span>부족 상품</span>
+                <strong id="dashboardLowStockCount">-</strong>
+                <p>최소 수량 미만</p>
+            </article>
+
+            <article class="summary-card">
+                <span>인식 모델</span>
+                <strong>YOLO11m</strong>
+                <p>train-6 best.pt 기준</p>
+            </article>
+
+            <article class="summary-card">
+                <span>최근 분석</span>
+                <strong id="dashboardLatestAnalysisCount">-</strong>
+                <p>최근 detection_result 기준</p>
+            </article>
+        </section>
+
+        <section class="card stock-status-card">
+            <div class="section-head">
+                <div>
+                    <h3>현재 재고 상태</h3>
+                    <p>상품별 현재 수량과 최소 수량을 비교해 표시합니다.</p>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>상품 ID</th>
+                        <th>상품명</th>
+                        <th>현재 수량</th>
+                        <th>최소 수량</th>
+                        <th>상태</th>
+                    </tr>
+                    </thead>
+                    <tbody id="dashboardStockTableBody">
+                    <tr>
+                        <td colspan="5" class="empty-cell">재고 데이터를 불러오는 중입니다.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="dashboard-grid bottom">
+            <article class="card">
+                <div class="section-head">
+                    <div>
+                        <h3>최근 분석 결과</h3>
+                        <p>AI가 최근 인식한 상품 목록입니다.</p>
+                    </div>
+                </div>
+
+                <div class="analysis-list" id="dashboardAnalysisList">
+                    <div class="empty-state">최근 분석 결과를 불러오는 중입니다.</div>
+                </div>
+            </article>
+
+            <article class="card">
+                <div class="section-head">
+                    <div>
+                        <h3>최근 처리 기록</h3>
+                        <p>입고, 반출, 수량 반영 이력입니다.</p>
+                    </div>
+                </div>
+
+                <div class="log-list" id="dashboardTransactionList">
+                    <div class="empty-state">최근 처리 기록을 불러오는 중입니다.</div>
+                </div>
+            </article>
+        </section>
+    </main>
+</div>
+
+<script src="/js/pages/dashboard.js?v=20260604-dashboard2"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+path: dataset
+train: images/train
+val: images/val
+
+names:
+  0: empty_plate
+  1: double_outlet
+  2: switch_single_outlet
+  3: media_port
+  4: multi_switch

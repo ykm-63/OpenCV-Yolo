@@ -1,0 +1,7 @@
+opencv-python
+numpy
+pytest
+ultralytics
+fastapi
+uvicorn
+python-multipart

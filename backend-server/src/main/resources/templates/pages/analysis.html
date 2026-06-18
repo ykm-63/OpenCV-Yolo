@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luma Scan 재고 인식</title>
+
+    <link rel="stylesheet" href="/css/common/reset.css">
+    <link rel="stylesheet" href="/css/common/layout.css">
+    <link rel="stylesheet" href="/css/common/button.css">
+    <link rel="stylesheet" href="/css/common/table.css">
+    <link rel="stylesheet" href="/css/pages/analysis.css?v=20260603-menu2">
+</head>
+<body>
+<div class="app">
+    <header class="header">
+        <div class="brand">
+            <a href="/opencv" class="brand-link">
+                <div class="brand-mark">LS</div>
+                <div>
+                    <h1>Luma Scan</h1>
+                    <p>YOLO 재고 인식 콘솔</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="header-actions">
+            <button type="button" class="menu-toggle" id="menuToggleBtn" aria-label="메뉴 열기">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="menu-backdrop" id="menuBackdrop" hidden></div>
+    <aside class="side-menu" id="sideMenu" hidden aria-hidden="true">
+        <div class="side-menu-head">
+            <strong>메뉴</strong>
+            <button type="button" id="menuCloseBtn" aria-label="메뉴 닫기">×</button>
+        </div>
+        <nav class="side-menu-links">
+            <a href="/opencv" class="active">인식 화면</a>
+            <a href="/home">대시보드</a>
+            <a href="/inbound">입고 관리</a>
+            <a href="/outbound">반출 관리</a>
+        </nav>
+    </aside>
+
+    <main class="main compact-main">
+        <section id="live" class="live-workspace">
+            <article class="video-panel">
+                <div class="panel-head">
+                    <div>
+                        <h3>실시간 카메라 화면</h3>
+                        <p>카메라로 촬영하거나 이미지를 선택해 YOLO 분석을 실행합니다.</p>
+                    </div>
+                    <span class="panel-label">LIVE</span>
+                </div>
+
+                <div class="large-camera-area" id="cameraArea">
+                    <video id="cameraVideo" autoplay playsinline muted></video>
+                    <canvas id="captureCanvas"></canvas>
+
+                    <div class="camera-placeholder" id="cameraPlaceholder">
+                        <strong>카메라 대기 중</strong>
+                        <span>카메라 시작 또는 이미지 업로드를 사용할 수 있습니다.</span>
+                    </div>
+
+                    <div class="scan-line"></div>
+                </div>
+
+                <div class="camera-controls">
+                    <button type="button" class="btn btn-primary" id="startCameraBtn">카메라 시작</button>
+                    <button type="button" class="btn btn-outline" id="captureBtn">현재 프레임 분석</button>
+                    <button type="button" class="btn btn-danger" id="stopCameraBtn">카메라 중지</button>
+                </div>
+            </article>
+
+            <aside class="live-side-panel">
+                <div class="result-card">
+                    <div class="side-title">
+                        <h3>인식 결과</h3>
+                        <p>FastAPI에서 받은 YOLO 결과입니다.</p>
+                    </div>
+
+                    <div class="result-summary">
+                        <div>
+                            <span>감지 종류</span>
+                            <strong id="detectedTypeCount">0</strong>
+                        </div>
+                        <div>
+                            <span>총 수량</span>
+                            <strong id="detectedTotalCount">0</strong>
+                        </div>
+                    </div>
+
+                    <div class="result-list" id="resultList">
+                        <div class="result-item">
+                            <div>
+                                <strong>분석 대기</strong>
+                                <span>이미지를 선택하거나 카메라 프레임을 분석하세요.</span>
+                            </div>
+                            <b>0개</b>
+                        </div>
+                    </div>
+
+                    <div class="worker-mode desktop-action-mode">
+                        <span>재고 반영 방식</span>
+                        <div class="worker-mode-buttons">
+                            <button type="button" class="worker-mode-btn active" data-action="ADD">입고</button>
+                            <button type="button" class="worker-mode-btn" data-action="REMOVE">반출</button>
+                            <button type="button" class="worker-mode-btn" data-action="SET">현재수량</button>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-primary full" id="saveResultBtn">
+                        선택 방식으로 재고 반영
+                    </button>
+                </div>
+
+                <div class="stock-mini-card">
+                    <h3>현재 DB 재고</h3>
+                    <div id="stockList">
+                        <div class="stock-item">
+                            <span>조회 대기</span>
+                            <b>-</b>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </section>
+
+        <section class="lower-grid compact-lower-grid">
+            <article id="image" class="image-panel">
+                <div class="section-head">
+                    <div>
+                        <h3>이미지 업로드</h3>
+                        <p>휴대폰에서는 사진 촬영 또는 갤러리 선택으로 바로 분석할 수 있습니다.</p>
+                    </div>
+                    <span>UPLOAD</span>
+                </div>
+
+                <div class="upload-zone">
+                    <input type="file" id="imageInput" name="file" accept="image/*" capture="environment">
+                    <label for="imageInput">
+                        <strong>사진 촬영 / 이미지 선택</strong>
+                        <span>선택 후 이미지 분석 버튼을 누르세요.</span>
+                    </label>
+                </div>
+
+                <div class="preview-zone">
+                    <img id="previewImage" src="" alt="선택 이미지 미리보기">
+                    <p id="previewText">선택된 이미지가 없습니다.</p>
+                </div>
+
+                <div class="mobile-worker-panel" id="mobileWorkerPanel">
+                    <div class="worker-result">
+                        <span>선택 품목</span>
+                        <strong id="workerItemName">분석 대기</strong>
+                    </div>
+                    <div class="worker-result">
+                        <span>인식 수량</span>
+                        <strong><b id="workerItemCount">0</b>개</strong>
+                    </div>
+
+                    <div class="worker-mode">
+                        <span>재고 반영 방식</span>
+                        <div class="worker-mode-buttons">
+                            <button type="button" class="worker-mode-btn active" data-action="ADD">입고</button>
+                            <button type="button" class="worker-mode-btn" data-action="REMOVE">반출</button>
+                            <button type="button" class="worker-mode-btn" data-action="SET">현재수량</button>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-primary full" id="mobileSaveResultBtn">
+                        선택 방식으로 재고 반영
+                    </button>
+                </div>
+
+                <div class="button-row">
+                    <button type="button" class="btn btn-primary" id="imageAnalyzeBtn">이미지 분석</button>
+                    <button type="button" class="btn btn-outline" id="resetImageBtn">초기화</button>
+                </div>
+            </article>
+
+            <article id="inventory" class="inventory-panel">
+                <div class="section-head">
+                    <div>
+                        <h3>분석 결과 데이터</h3>
+                        <p>인식된 품목, 수량, 신뢰도를 확인합니다.</p>
+                    </div>
+                    <span>RESULT</span>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>품목명</th>
+                            <th>수량</th>
+                            <th>신뢰도</th>
+                            <th>이미지 파일명</th>
+                            <th>분석 시간</th>
+                        </tr>
+                        </thead>
+                        <tbody id="resultTableBody">
+                        <tr>
+                            <td colspan="5">아직 분석 결과가 없습니다.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </article>
+        </section>
+
+        <section class="hidden-support-panels" hidden aria-hidden="true">
+            <span class="state-dot" id="liveDot"></span>
+            <span id="liveStatusText">대기 중</span>
+            <span id="inputModeText">이미지 업로드</span>
+            <span id="processStatusText">대기</span>
+            <span id="fastApiStatusText">대기 중</span>
+            <span id="cameraPermissionText">대기 중</span>
+            <pre id="rawJson">{}</pre>
+            <div id="logList"></div>
+            <div id="transactionList"></div>
+        </section>
+    </main>
+</div>
+
+<script src="/js/pages/analysis.js?v=20260604-stock-sync1"></script>
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luma Scan 반입 관리</title>
+
+    <link rel="stylesheet" href="/css/common/reset.css">
+    <link rel="stylesheet" href="/css/common/layout.css?v=20260603-menu3">
+    <link rel="stylesheet" href="/css/common/button.css">
+    <link rel="stylesheet" href="/css/common/table.css">
+    <link rel="stylesheet" href="/css/common/modal.css">
+    <link rel="stylesheet" href="/css/pages/inbound.css">
+</head>
+<body>
+
+<div class="app">
+
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="main">
+
+        <section class="page-title">
+            <div>
+                <p>Inbound Management</p>
+                <h2>상품 반입 관리</h2>
+                <span>
+                    창고 또는 매장으로 들어온 상품의 반입 기록을 등록하고, 반입 수량 및 처리 상태를 관리합니다.
+                </span>
+            </div>
+
+            <div class="inbound-actions">
+                <button type="button" class="btn btn-outline">CSV 다운로드</button>
+                <button type="button" class="btn btn-primary" id="openInboundModalBtn">반입 등록</button>
+            </div>
+        </section>
+
+        <section class="inbound-summary-row">
+            <article class="inbound-chip">
+                <span>오늘 반입 건수</span>
+                <strong>9</strong>
+            </article>
+
+            <article class="inbound-chip">
+                <span>이번 주 반입 수량</span>
+                <strong>236</strong>
+            </article>
+
+            <article class="inbound-chip warning">
+                <span>검수 대기</span>
+                <strong>3</strong>
+            </article>
+
+            <article class="inbound-chip">
+                <span>최근 반입 시각</span>
+                <strong>14:10</strong>
+            </article>
+        </section>
+
+        <section class="inbound-filter-card">
+            <div class="filter-row">
+                <div class="filter-control">
+                    <label>검색어</label>
+                    <input type="text" id="inboundSearchInput" placeholder="반입 ID, 상품명, 공급처 검색">
+                </div>
+
+                <div class="filter-control">
+                    <label>카테고리</label>
+                    <select id="inboundCategoryFilter">
+                        <option value="all">전체</option>
+                        <option value="음료">음료</option>
+                        <option value="스낵">스낵</option>
+                        <option value="생활용품">생활용품</option>
+                    </select>
+                </div>
+
+                <div class="filter-control">
+                    <label>처리 상태</label>
+                    <select id="inboundStatusFilter">
+                        <option value="all">전체</option>
+                        <option value="처리 완료">처리 완료</option>
+                        <option value="검수 대기">검수 대기</option>
+                    </select>
+                </div>
+
+                <button type="button" class="btn btn-primary" id="inboundSearchBtn">검색</button>
+            </div>
+        </section>
+
+        <section class="inbound-table-card">
+            <div class="section-head">
+                <div>
+                    <h3>반입 내역</h3>
+                    <p>상품 반입 이력 및 신규 반입 등록을 관리합니다.</p>
+                </div>
+
+                <div class="table-actions">
+                    <button type="button" class="btn btn-outline">선택 삭제</button>
+                    <button type="button" class="btn btn-primary" id="openInboundModalBtn2">반입 등록</button>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th><input type="checkbox"></th>
+                        <th>반입 ID</th>
+                        <th>상품명</th>
+                        <th>카테고리</th>
+                        <th>반입 수량</th>
+                        <th>공급처 / 사유</th>
+                        <th>처리 시각</th>
+                        <th>상태</th>
+                        <th>관리</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>IN-0051</td>
+                        <td>생수</td>
+                        <td>음료</td>
+                        <td>30</td>
+                        <td>정기 입고</td>
+                        <td>2026-05-15 14:10</td>
+                        <td><span class="inbound-status confirmed">처리 완료</span></td>
+                        <td>
+                            <div class="row-actions">
+                                <button type="button">수정</button>
+                                <button type="button" class="danger-text">삭제</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>IN-0050</td>
+                        <td>콜라</td>
+                        <td>음료</td>
+                        <td>24</td>
+                        <td>공급처 입고</td>
+                        <td>2026-05-15 13:40</td>
+                        <td><span class="inbound-status confirmed">처리 완료</span></td>
+                        <td>
+                            <div class="row-actions">
+                                <button type="button">수정</button>
+                                <button type="button" class="danger-text">삭제</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>IN-0049</td>
+                        <td>감자칩</td>
+                        <td>스낵</td>
+                        <td>18</td>
+                        <td>행사 재고 보충</td>
+                        <td>2026-05-15 12:20</td>
+                        <td><span class="inbound-status pending">검수 대기</span></td>
+                        <td>
+                            <div class="row-actions">
+                                <button type="button">수정</button>
+                                <button type="button" class="danger-text">삭제</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>IN-0048</td>
+                        <td>초코바</td>
+                        <td>스낵</td>
+                        <td>40</td>
+                        <td>신규 상품 입고</td>
+                        <td>2026-05-15 11:30</td>
+                        <td><span class="inbound-status pending">검수 대기</span></td>
+                        <td>
+                            <div class="row-actions">
+                                <button type="button">수정</button>
+                                <button type="button" class="danger-text">삭제</button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <div class="modal-overlay" id="inboundModalOverlay">
+            <div class="modal-box">
+                <div class="modal-head">
+                    <h3>반입 등록</h3>
+                    <button type="button" class="modal-close" id="closeInboundModalBtn">×</button>
+                </div>
+
+                <form id="inboundForm">
+                    <div class="form-row">
+                        <label>상품 선택</label>
+                        <select name="productId" class="form-control" required>
+                            <option value="">상품을 선택하세요</option>
+                            <option value="P-001">콜라 (현재 재고: 32)</option>
+                            <option value="P-002">사이다 (현재 재고: 8)</option>
+                            <option value="P-003">생수 (현재 재고: 3)</option>
+                            <option value="P-004">감자칩 (현재 재고: 21)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <label>반입 수량</label>
+                        <input type="number" name="inboundQty" class="form-control" placeholder="수량 입력" min="1" required>
+                    </div>
+
+                    <div class="form-row">
+                        <label>공급처 / 사유</label>
+                        <input type="text" name="supplier" class="form-control" placeholder="예: 정기 입고, 공급처 입고">
+                    </div>
+
+                    <div class="form-row">
+                        <label>처리 일시</label>
+                        <input type="datetime-local" name="inboundDate" class="form-control" required>
+                    </div>
+
+                    <div class="form-row">
+                        <label>처리 상태</label>
+                        <select name="status" class="form-control">
+                            <option value="처리 완료">처리 완료</option>
+                            <option value="검수 대기">검수 대기</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-outline" id="cancelInboundBtn">취소</button>
+                        <button type="submit" class="btn btn-primary">반입 등록</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+</div>
+
+<script src="/js/common/nav.js?v=20260603-menu3"></script>
+<script src="/js/pages/inbound.js"></script>
+</body>
+</html>
